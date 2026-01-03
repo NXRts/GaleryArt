@@ -1,36 +1,49 @@
 import React from 'react';
 import type { UnsplashPhoto } from '../services/api';
 
+import { Heart } from 'lucide-react';
+
 interface GalleryProps {
-    photos: UnsplashPhoto[];
-    onPhotoClick: (photo: UnsplashPhoto) => void;
+  photos: UnsplashPhoto[];
+  onPhotoClick: (photo: UnsplashPhoto) => void;
+  favorites: string[];
+  onToggleFavorite: (photo: UnsplashPhoto, e: React.MouseEvent) => void;
 }
 
-const Gallery: React.FC<GalleryProps> = ({ photos, onPhotoClick }) => {
-    return (
-        <div className="gallery-container">
-            {photos.map((photo) => (
-                <div
-                    key={photo.id}
-                    className="gallery-item fade-in"
-                    onClick={() => onPhotoClick(photo)}
-                    style={{ animationDelay: `${Math.random() * 0.5}s` }}
+const Gallery: React.FC<GalleryProps> = ({ photos, onPhotoClick, favorites, onToggleFavorite }) => {
+  return (
+    <div className="gallery-container">
+      {photos.map((photo) => {
+        const isFavorite = favorites.includes(photo.id);
+        return (
+          <div
+            key={photo.id}
+            className="gallery-item fade-in"
+            onClick={() => onPhotoClick(photo)}
+            style={{ animationDelay: `${Math.random() * 0.5}s` }}
+          >
+            <div className="image-wrapper">
+              <img
+                src={photo.urls.small}
+                alt={photo.alt_description || 'Art'}
+                className="gallery-image"
+                loading="lazy"
+              />
+              <div className="overlay">
+                <span>{photo.user.name}</span>
+                <button
+                  className={`fav-btn ${isFavorite ? 'active' : ''}`}
+                  onClick={(e) => onToggleFavorite(photo, e)}
                 >
-                    <div className="image-wrapper">
-                        <img
-                            src={photo.urls.small}
-                            alt={photo.alt_description || 'Art'}
-                            className="gallery-image"
-                            loading="lazy"
-                        />
-                        <div className="overlay">
-                            <span>{photo.user.name}</span>
-                        </div>
-                    </div>
-                </div>
-            ))}
+                  <Heart size={20} fill={isFavorite ? "#e74c3c" : "none"} />
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })}
 
-            <style>{`
+      <style>{`
         .gallery-container {
           column-count: 4;
           column-gap: var(--spacing-sm);
@@ -74,6 +87,7 @@ const Gallery: React.FC<GalleryProps> = ({ photos, onPhotoClick }) => {
           transition: opacity var(--transition-fast);
           display: flex;
           align-items: flex-end;
+          justify-content: space-between;
         }
         
         .image-wrapper:hover .overlay {
@@ -85,6 +99,28 @@ const Gallery: React.FC<GalleryProps> = ({ photos, onPhotoClick }) => {
           font-weight: 500;
           font-family: var(--font-sans);
           font-size: 0.9rem;
+        }
+
+        .fav-btn {
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all var(--transition-fast);
+        }
+
+        .fav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .fav-btn.active {
+            color: #e74c3c;
+            background: rgba(255,255,255,0.9);
         }
 
         @media (max-width: 1200px) {
@@ -99,8 +135,8 @@ const Gallery: React.FC<GalleryProps> = ({ photos, onPhotoClick }) => {
           .gallery-container { column-count: 1; }
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default Gallery;
