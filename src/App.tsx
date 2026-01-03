@@ -4,6 +4,7 @@ import { fetchPhotos, searchPhotos, type UnsplashPhoto } from './services/api';
 import Gallery from './components/Gallery';
 import Modal from './components/Modal';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import About from './pages/About';
 import Contact from './pages/Contact';
 
@@ -83,24 +84,16 @@ const AppContent = () => {
         <Route path="/contact" element={<Contact />} />
       </Routes>
 
-      <footer className="app-footer">
-        <p>Images via Unsplash • Built with React & TypeScript</p>
-      </footer>
+      <Footer />
 
       <style>{`
                 .app-container {
                     min-height: 100vh;
-                    padding-bottom: var(--spacing-xl);
+                    display: flex;
+                    flex-direction: column;
                 }
                 
-                .app-footer {
-                    text-align: center;
-                    padding: var(--spacing-lg);
-                    color: rgba(255,255,255,0.3);
-                    font-size: 0.9rem;
-                    margin-top: auto;
-                    border-top: 1px solid rgba(255,255,255,0.05);
-                }
+                /* Removed .app-footer styles as they are now in the component */
             `}</style>
     </div>
   );
