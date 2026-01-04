@@ -74,6 +74,33 @@ export const fetchPhotos = async (page: number = 1, perPage: number = 20): Promi
     }
 };
 
+export const searchPhotos = async (query: string, page: number = 1, perPage: number = 20): Promise<UnsplashPhoto[]> => {
+    try {
+        const key = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
+
+        if (!key) {
+            console.warn('Unsplash API Key is missing. Using mock data for search.');
+            return generateMockPhotos(perPage);
+        }
+
+        const response = await fetch(`${API_URL}/search/photos?page=${page}&per_page=${perPage}&query=${encodeURIComponent(query)}`, {
+            headers: {
+                Authorization: `Client-ID ${key}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error searching photos: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data.results; // Search API returns { results: [...] }
+    } catch (error) {
+        console.error('Failed to search photos:', error);
+        return generateMockPhotos(perPage);
+    }
+};
+
 const generateMockPhotos = (count: number): UnsplashPhoto[] => {
     return Array.from({ length: count }).map((_, i) => ({
         id: `mock-${i}`,
