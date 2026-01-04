@@ -40,20 +40,19 @@ export interface UnsplashPhoto {
     };
 }
 
+// Simple seeded random number generator to ensure consistent results across refreshes
+const seededRandom = (seed: number) => {
+    const x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+};
+
 export const fetchPhotos = async (page: number = 1, perPage: number = 20): Promise<UnsplashPhoto[]> => {
     try {
-        // Note: In a real app, the key should be in .env
-        // For this demo, we assume the user might not have a key immediately,
-        // so we'll check for a key or use a fallback mechanism (mock data) if I can't provide a real key.
-        // I will NOT provide my own API key. I will assume the user has one or I will write a mock fallback.
-
-        // Let's rely on an environment variable.
         const key = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 
         if (!key) {
             console.warn('Unsplash API Key is missing. Please add VITE_UNSPLASH_ACCESS_KEY to your .env file.');
-            // Return mock data for demonstration purposes if no key is found
-            return generateMockPhotos(perPage);
+            return generateMockPhotos(perPage, page);
         }
 
         const response = await fetch(`${API_URL}/photos?page=${page}&per_page=${perPage}&order_by=popular`, {
@@ -70,7 +69,7 @@ export const fetchPhotos = async (page: number = 1, perPage: number = 20): Promi
         return data;
     } catch (error) {
         console.error('Failed to fetch photos:', error);
-        return generateMockPhotos(perPage);
+        return generateMockPhotos(perPage, page);
     }
 };
 
@@ -80,7 +79,7 @@ export const searchPhotos = async (query: string, page: number = 1, perPage: num
 
         if (!key) {
             console.warn('Unsplash API Key is missing. Using mock data for search.');
-            return generateMockPhotos(perPage);
+            return generateMockPhotos(perPage, page);
         }
 
         const response = await fetch(`${API_URL}/search/photos?page=${page}&per_page=${perPage}&query=${encodeURIComponent(query)}`, {
@@ -97,32 +96,38 @@ export const searchPhotos = async (query: string, page: number = 1, perPage: num
         return data.results; // Search API returns { results: [...] }
     } catch (error) {
         console.error('Failed to search photos:', error);
-        return generateMockPhotos(perPage);
+        return generateMockPhotos(perPage, page);
     }
 };
 
-const generateMockPhotos = (count: number): UnsplashPhoto[] => {
+const generateMockPhotos = (count: number, page: number = 1): UnsplashPhoto[] => {
     return Array.from({ length: count }).map((_, i) => {
-        // Randomize aspect ratios: Portrait, Landscape, Square
-        const aspectRatio = Math.random();
+        // Create a unique seed based on page and index to ensure this specific item is always the same
+        const seed = page * 1000 + i;
+
+        // Use seeded random for aspect ratios
+        const aspectRatio = seededRandom(seed);
         let width, height;
 
         if (aspectRatio < 0.4) {
             // Portrait
             width = 400;
-            height = 600 + Math.floor(Math.random() * 200);
+            height = 600 + Math.floor(seededRandom(seed + 1) * 200);
         } else if (aspectRatio < 0.8) {
             // Landscape
             width = 600;
-            height = 400 + Math.floor(Math.random() * 100);
+            height = 400 + Math.floor(seededRandom(seed + 2) * 100);
         } else {
             // Square-ish
             width = 500;
             height = 500;
         }
 
+        // Use the seed for the image URL too, ensuring the image visual is consistent
+        const imageSeed = Math.floor(seededRandom(seed + 3) * 1000);
+
         return {
-            id: `mock-${i}`,
+            id: `mock-${seed}`, // Use the stable seed as ID so it persists correctly with page
             created_at: new Date().toISOString(),
             width: width,
             height: height,
@@ -131,11 +136,11 @@ const generateMockPhotos = (count: number): UnsplashPhoto[] => {
             description: 'Mock Photo',
             alt_description: 'A placeholder image for the art gallery',
             urls: {
-                raw: `https://picsum.photos/${width}/${height}?random=${i}`,
-                full: `https://picsum.photos/${width}/${height}?random=${i}`,
-                regular: `https://picsum.photos/${width}/${height}?random=${i}`,
-                small: `https://picsum.photos/${width}/${height}?random=${i}`,
-                thumb: `https://picsum.photos/200/200?random=${i}`,
+                raw: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
+                full: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
+                regular: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
+                small: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
+                thumb: `https://picsum.photos/seed/${imageSeed}/200/200`,
             },
             links: { self: '', html: '', download: '', download_location: '' },
             user: {
