@@ -46,13 +46,13 @@ const seededRandom = (seed: number) => {
     return x - Math.floor(x);
 };
 
-export const fetchPhotos = async (page: number = 1, perPage: number = 20): Promise<UnsplashPhoto[]> => {
+export const fetchPhotos = async (page: number = 1, perPage: number = 20, seedOffset: number = 0): Promise<UnsplashPhoto[]> => {
     try {
         const key = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 
         if (!key) {
             console.warn('Unsplash API Key is missing. Please add VITE_UNSPLASH_ACCESS_KEY to your .env file.');
-            return generateMockPhotos(perPage, page);
+            return generateMockPhotos(perPage, page, seedOffset);
         }
 
         const response = await fetch(`${API_URL}/photos?page=${page}&per_page=${perPage}&order_by=popular`, {
@@ -69,17 +69,17 @@ export const fetchPhotos = async (page: number = 1, perPage: number = 20): Promi
         return data;
     } catch (error) {
         console.error('Failed to fetch photos:', error);
-        return generateMockPhotos(perPage, page);
+        return generateMockPhotos(perPage, page, seedOffset);
     }
 };
 
-export const searchPhotos = async (query: string, page: number = 1, perPage: number = 20): Promise<UnsplashPhoto[]> => {
+export const searchPhotos = async (query: string, page: number = 1, perPage: number = 20, seedOffset: number = 0): Promise<UnsplashPhoto[]> => {
     try {
         const key = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 
         if (!key) {
             console.warn('Unsplash API Key is missing. Using mock data for search.');
-            return generateMockPhotos(perPage, page);
+            return generateMockPhotos(perPage, page, seedOffset);
         }
 
         const response = await fetch(`${API_URL}/search/photos?page=${page}&per_page=${perPage}&query=${encodeURIComponent(query)}`, {
@@ -96,14 +96,15 @@ export const searchPhotos = async (query: string, page: number = 1, perPage: num
         return data.results; // Search API returns { results: [...] }
     } catch (error) {
         console.error('Failed to search photos:', error);
-        return generateMockPhotos(perPage, page);
+        return generateMockPhotos(perPage, page, seedOffset);
     }
 };
 
-const generateMockPhotos = (count: number, page: number = 1): UnsplashPhoto[] => {
+const generateMockPhotos = (count: number, page: number = 1, seedOffset: number = 0): UnsplashPhoto[] => {
     return Array.from({ length: count }).map((_, i) => {
         // Create a unique seed based on page and index to ensure this specific item is always the same
-        const seed = page * 1000 + i;
+        // AND add seedOffset to allow force refresh
+        const seed = (page * 1000 + i) + seedOffset;
 
         // Use seeded random for aspect ratios
         const aspectRatio = seededRandom(seed);

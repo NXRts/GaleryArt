@@ -1,12 +1,13 @@
 import React, { type FormEvent, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, Home, Info, Mail, Heart } from 'lucide-react';
+import { Search, Menu, X, Home, Info, Mail, Heart, RefreshCw } from 'lucide-react';
 
 interface NavbarProps {
     onSearch: (query: string) => void;
+    onShuffle: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
+const Navbar: React.FC<NavbarProps> = ({ onSearch, onShuffle }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState('');
     const location = useLocation();
@@ -40,6 +41,12 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                             onChange={(e) => setQuery(e.target.value)}
                         />
                     </form>
+                </div>
+
+                <div className="nav-actions">
+                    <button className="icon-btn" onClick={onShuffle} title="Shuffle Gallery">
+                        <RefreshCw size={20} />
+                    </button>
                 </div>
 
                 <div className={`nav-links ${isOpen ? 'open' : ''}`}>
@@ -123,6 +130,29 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 background: #333;
                 border-color: var(--color-accent);
             }
+            
+            .nav-actions {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .icon-btn {
+                background: transparent;
+                border: none;
+                color: var(--color-text-secondary);
+                cursor: pointer;
+                transition: color var(--transition-fast), transform var(--transition-fast);
+                padding: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .icon-btn:hover {
+                color: var(--color-accent);
+                transform: rotate(180deg);
+            }
 
             .nav-links {
                 display: flex;
@@ -142,6 +172,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             .nav-item:hover, .nav-item.active {
                 color: #fff;
             }
+
 
             .mobile-menu-btn {
                 display: none;
