@@ -1,6 +1,6 @@
 import React, { type FormEvent, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, Home, Info, Mail } from 'lucide-react';
+import { Search, Menu, X, Home, Info, Mail, Heart } from 'lucide-react';
 
 interface NavbarProps {
     onSearch: (query: string) => void;
@@ -45,6 +45,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 <div className={`nav-links ${isOpen ? 'open' : ''}`}>
                     <Link to="/" className={`nav-item ${isActive('/')}`} onClick={() => setIsOpen(false)}>
                         <Home size={18} /> Home
+                    </Link>
+                    <Link to="/favorites" className={`nav-item ${isActive('/favorites')}`} onClick={() => setIsOpen(false)}>
+                        <Heart size={18} /> Favorites
                     </Link>
                     <Link to="/about" className={`nav-item ${isActive('/about')}`} onClick={() => setIsOpen(false)}>
                         <Info size={18} /> About

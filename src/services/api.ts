@@ -102,33 +102,51 @@ export const searchPhotos = async (query: string, page: number = 1, perPage: num
 };
 
 const generateMockPhotos = (count: number): UnsplashPhoto[] => {
-    return Array.from({ length: count }).map((_, i) => ({
-        id: `mock-${i}`,
-        created_at: new Date().toISOString(),
-        width: 1080,
-        height: 1920,
-        color: '#333',
-        blur_hash: 'L0000000000000000000',
-        description: 'Mock Photo',
-        alt_description: 'A placeholder image for the art gallery',
-        urls: {
-            raw: `https://source.unsplash.com/random/800x600?art&sig=${i}`,
-            full: `https://source.unsplash.com/random/800x600?art&sig=${i}`,
-            regular: `https://source.unsplash.com/random/800x600?art&sig=${i}`, // Unsplash source is deprecated but serves as a simple placeholder URL structure, technically redirects or fails, checking.
-            // Better mock: Picsum or similar if Unsplash Source is dead.
-            // Actually, Unsplash Source was deprecated. Let's use Lorem Picsum for mocks.
-            small: `https://picsum.photos/400/600?random=${i}`,
-            thumb: `https://picsum.photos/200/300?random=${i}`,
-        },
-        links: { self: '', html: '', download: '', download_location: '' },
-        user: {
-            id: 'user-mock',
-            username: 'artist_mock',
-            name: 'Unknown Artist',
-            portfolio_url: null,
-            bio: 'Just a mock artist',
-            location: 'Nowhere',
-            profile_image: { small: '', medium: '', large: '' },
-        },
-    }));
+    return Array.from({ length: count }).map((_, i) => {
+        // Randomize aspect ratios: Portrait, Landscape, Square
+        const aspectRatio = Math.random();
+        let width, height;
+
+        if (aspectRatio < 0.4) {
+            // Portrait
+            width = 400;
+            height = 600 + Math.floor(Math.random() * 200);
+        } else if (aspectRatio < 0.8) {
+            // Landscape
+            width = 600;
+            height = 400 + Math.floor(Math.random() * 100);
+        } else {
+            // Square-ish
+            width = 500;
+            height = 500;
+        }
+
+        return {
+            id: `mock-${i}`,
+            created_at: new Date().toISOString(),
+            width: width,
+            height: height,
+            color: '#333',
+            blur_hash: 'L0000000000000000000',
+            description: 'Mock Photo',
+            alt_description: 'A placeholder image for the art gallery',
+            urls: {
+                raw: `https://picsum.photos/${width}/${height}?random=${i}`,
+                full: `https://picsum.photos/${width}/${height}?random=${i}`,
+                regular: `https://picsum.photos/${width}/${height}?random=${i}`,
+                small: `https://picsum.photos/${width}/${height}?random=${i}`,
+                thumb: `https://picsum.photos/200/200?random=${i}`,
+            },
+            links: { self: '', html: '', download: '', download_location: '' },
+            user: {
+                id: 'user-mock',
+                username: 'artist_mock',
+                name: 'Unknown Artist',
+                portfolio_url: null,
+                bio: 'Just a mock artist',
+                location: 'Nowhere',
+                profile_image: { small: '', medium: '', large: '' },
+            },
+        };
+    });
 };

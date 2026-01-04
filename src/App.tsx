@@ -7,21 +7,21 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Favorites from './pages/Favorites';
 
-const Home = () => {
+const Home = ({
+  favorites,
+  onToggleFavorite
+}: {
+  favorites: string[],
+  onToggleFavorite: (photo: UnsplashPhoto, e: React.MouseEvent) => void
+}) => {
   const [photos, setPhotos] = useState<UnsplashPhoto[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<UnsplashPhoto | null>(null);
   const [loading, setLoading] = useState(true);
   const [page] = useState(1);
   const location = useLocation();
 
-  // Parse search query from URL or state if we were to lift state up. 
-  // For simplicity, let's use a simple prop-drilled search or URL param if we wanted deep linking.
-  // However, the Navbar currently pushes to '/' and we need to know the query.
-  // Let's implement a search context or just use a custom hook?
-  // Actually, let's make the Home component handle both default fetch and search.
-
-  // We can use a query param for search: /?q=art
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get('q');
 
@@ -50,7 +50,12 @@ const Home = () => {
       {loading ? (
         <div className="loader">Searching the archives...</div>
       ) : (
-        <Gallery photos={photos} onPhotoClick={setSelectedPhoto} />
+        <Gallery
+          photos={photos}
+          onPhotoClick={setSelectedPhoto}
+          favorites={favorites}
+          onToggleFavorite={onToggleFavorite}
+        />
       )}
       <Modal photo={selectedPhoto} onClose={() => setSelectedPhoto(null)} />
 
@@ -66,12 +71,45 @@ const Home = () => {
   );
 };
 
-// Wrapper handling Navigation
 const AppContent = () => {
   const navigate = useNavigate();
+  const [favorites, setFavorites] = useState<string[]>([]);
+  // Keep a cache of full objects for the favorites page to use
+  const [favoriteObjects, setFavoriteObjects] = useState<UnsplashPhoto[]>([]);
+
+  useEffect(() => {
+    const savedFavs = localStorage.getItem('favorites');
+    const savedObjects = localStorage.getItem('favorite_objects');
+    if (savedFavs) setFavorites(JSON.parse(savedFavs));
+    if (savedObjects) setFavoriteObjects(JSON.parse(savedObjects));
+  }, []);
 
   const handleSearch = (query: string) => {
     navigate(`/?q=${encodeURIComponent(query)}`);
+  };
+
+  const handleToggleFavorite = (photo: UnsplashPhoto, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const isFav = favorites.includes(photo.id);
+    let newFavs, newObjects;
+
+    if (isFav) {
+      newFavs = favorites.filter(id => id !== photo.id);
+      newObjects = favoriteObjects.filter(p => p.id !== photo.id);
+    } else {
+      newFavs = [...favorites, photo.id];
+      // Avoid duplicates in objects just in case
+      if (!favoriteObjects.find(p => p.id === photo.id)) {
+        newObjects = [...favoriteObjects, photo];
+      } else {
+        newObjects = favoriteObjects;
+      }
+    }
+
+    setFavorites(newFavs);
+    setFavoriteObjects(newObjects);
+    localStorage.setItem('favorites', JSON.stringify(newFavs));
+    localStorage.setItem('favorite_objects', JSON.stringify(newObjects));
   };
 
   return (
@@ -79,9 +117,16 @@ const AppContent = () => {
       <Navbar onSearch={handleSearch} />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home favorites={favorites} onToggleFavorite={handleToggleFavorite} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/favorites" element={
+          <Favorites
+            favorites={favorites}
+            allPhotos={favoriteObjects}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        } />
       </Routes>
 
       <Footer />
@@ -92,8 +137,6 @@ const AppContent = () => {
                     display: flex;
                     flex-direction: column;
                 }
-                
-                /* Removed .app-footer styles as they are now in the component */
             `}</style>
     </div>
   );
