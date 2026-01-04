@@ -80,8 +80,32 @@ const AppContent = () => {
   useEffect(() => {
     const savedFavs = localStorage.getItem('favorites');
     const savedObjects = localStorage.getItem('favorite_objects');
-    if (savedFavs) setFavorites(JSON.parse(savedFavs));
-    if (savedObjects) setFavoriteObjects(JSON.parse(savedObjects));
+
+    let initialFavs: string[] = [];
+    let initialObjects: UnsplashPhoto[] = [];
+
+    if (savedFavs) initialFavs = JSON.parse(savedFavs);
+    if (savedObjects) initialObjects = JSON.parse(savedObjects);
+
+    // MIGRATION: Filter out legacy favorites with unstable URLs (containing ?random)
+    // This ensures users don't see "changing" images from old data.
+    const consistentObjects = initialObjects.filter(photo => {
+      return !photo.urls.small.includes('?random');
+    });
+
+    // Sync IDs with filtered objects
+    const consistentIds = initialFavs.filter(id =>
+      consistentObjects.find(obj => obj.id === id)
+    );
+
+    if (consistentObjects.length !== initialObjects.length) {
+      console.log("Cleaned up unstable legacy favorites.");
+      localStorage.setItem('favorites', JSON.stringify(consistentIds));
+      localStorage.setItem('favorite_objects', JSON.stringify(consistentObjects));
+    }
+
+    setFavorites(consistentIds);
+    setFavoriteObjects(consistentObjects);
   }, []);
 
   const handleSearch = (query: string) => {
