@@ -11,10 +11,12 @@ import Favorites from './pages/Favorites';
 
 const Home = ({
   favorites,
-  onToggleFavorite
+  onToggleFavorite,
+  refreshKey
 }: {
   favorites: string[],
-  onToggleFavorite: (photo: UnsplashPhoto, e: React.MouseEvent) => void
+  onToggleFavorite: (photo: UnsplashPhoto, e: React.MouseEvent) => void;
+  refreshKey: number;
 }) => {
   const [photos, setPhotos] = useState<UnsplashPhoto[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<UnsplashPhoto | null>(null);
@@ -31,9 +33,9 @@ const Home = ({
       try {
         let data;
         if (searchQuery) {
-          data = await searchPhotos(searchQuery, page);
+          data = await searchPhotos(searchQuery, page, 20, refreshKey);
         } else {
-          data = await fetchPhotos(page);
+          data = await fetchPhotos(page, 20, refreshKey);
         }
         setPhotos(data);
       } catch (error) {
@@ -43,7 +45,7 @@ const Home = ({
     };
 
     loadPhotos();
-  }, [searchQuery, page]);
+  }, [searchQuery, page, refreshKey]);
 
   return (
     <main>
@@ -76,6 +78,7 @@ const AppContent = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
   // Keep a cache of full objects for the favorites page to use
   const [favoriteObjects, setFavoriteObjects] = useState<UnsplashPhoto[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const savedFavs = localStorage.getItem('favorites');
@@ -112,6 +115,10 @@ const AppContent = () => {
     navigate(`/?q=${encodeURIComponent(query)}`);
   };
 
+  const handleShuffle = () => {
+    setRefreshKey(prev => prev + 1000); // Increment by large amount to jump seeds
+  };
+
   const handleToggleFavorite = (photo: UnsplashPhoto, e: React.MouseEvent) => {
     e.stopPropagation();
     const isFav = favorites.includes(photo.id);
@@ -138,10 +145,10 @@ const AppContent = () => {
 
   return (
     <div className="app-container">
-      <Navbar onSearch={handleSearch} />
+      <Navbar onSearch={handleSearch} onShuffle={handleShuffle} />
 
       <Routes>
-        <Route path="/" element={<Home favorites={favorites} onToggleFavorite={handleToggleFavorite} />} />
+        <Route path="/" element={<Home favorites={favorites} onToggleFavorite={handleToggleFavorite} refreshKey={refreshKey} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/favorites" element={
