@@ -84,184 +84,221 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch, onShuffle }) => {
             </div>
 
             <style>{`
-            .navbar {
-                position: sticky;
-                top: 0;
-                z-index: 100;
-                background: rgba(15, 15, 15, 0.85);
-                backdrop-filter: blur(12px);
-                border-bottom: 1px solid rgba(255,255,255,0.05);
-                padding: 1rem var(--spacing-md);
-            }
-
-            .nav-container {
-                max-width: 1400px;
-                margin: 0 auto;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: var(--spacing-md);
-            }
-
-            .nav-logo {
-                font-family: var(--font-serif);
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: #fff;
-            }
-
-            .desktop-search {
-                flex: 1;
-                max-width: 500px;
-                margin: 0 auto;
-            }
-
-            .search-form {
-                position: relative;
-                display: flex;
-                align-items: center;
-            }
-
-            .search-icon {
-                position: absolute;
-                left: 1rem;
-                color: var(--color-text-secondary);
-            }
-
-            .search-form input {
-                width: 100%;
-                background: #252525;
-                border: 1px solid transparent;
-                padding: 0.7rem 1rem 0.7rem 3rem;
-                border-radius: 50px;
-                color: white;
-                font-family: var(--font-sans);
-                transition: all var(--transition-fast);
-            }
-
-            .search-form input:focus {
-                outline: none;
-                background: #333;
-                border-color: var(--color-accent);
-            }
-            
-            .nav-actions {
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-            }
-
-            .icon-btn {
-                background: transparent;
-                border: none;
-                color: var(--color-text-secondary);
-                cursor: pointer;
-                transition: color var(--transition-fast), transform var(--transition-fast);
-                padding: 0.5rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .icon-btn:hover {
-                color: var(--color-accent);
-                transform: rotate(180deg);
-            }
-
-            .nav-links {
-                display: flex;
-                align-items: center;
-                gap: var(--spacing-md);
-            }
-
-            .nav-item {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 0.95rem;
-                color: var(--color-text-secondary);
-                transition: color var(--transition-fast);
-            }
-
-            .nav-item:hover, .nav-item.active {
-                color: #fff;
-            }
-
-            .mobile-search {
-                display: none;
-                width: 100%;
-                margin-bottom: 1rem;
-            }
-            
-            .mobile-backdrop {
-                display: none;
-            }
-
-            @media (max-width: 768px) {
+                /* =======================
+                NAVBAR BASE
+                ======================= */
                 .navbar {
-                    background: #000; /* Solid black on mobile */
-                    backdrop-filter: none;
-                }
-
-                .desktop-search { display: none; }
-                
-                .mobile-menu-btn { display: block; z-index: 2001; }
-                
-                .mobile-backdrop {
-                    display: block;
-                    position: fixed;
+                    position: sticky;
                     top: 0;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    background: rgba(0,0,0,0.8); /* Darker dim */
-                    backdrop-filter: blur(5px);
-                    z-index: 1999;
-                    animation: fadeIn 0.3s ease-out;
+                    z-index: 3000;
+                    background: rgba(15, 15, 15, 0.85);
+                    backdrop-filter: blur(12px);
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    padding: 1rem var(--spacing-md);
                 }
 
-                .nav-links {
-                    position: fixed;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    width: 85%; /* Slightly wider */
-                    max-width: 320px;
-                    background: #000; /* Solid black */
-                    flex-direction: column;
-                    padding: 5rem var(--spacing-md) var(--spacing-md);
-                    transform: translateX(100%);
-                    transition: transform var(--transition-slow);
-                    box-shadow: -5px 0 30px rgba(0,0,0,1);
-                    align-items: flex-start;
-                    z-index: 2000;
-                    border-left: 1px solid #222;
+                .nav-container {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: var(--spacing-md);
                 }
 
-                .nav-links.open {
-                    transform: translateX(0);
+                /* =======================
+                LOGO
+                ======================= */
+                .nav-logo {
+                    font-family: var(--font-serif);
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    color: #fff;
                 }
 
-                .mobile-search {
-                    display: block;
-                    margin-bottom: 2rem;
+                /* =======================
+                SEARCH
+                ======================= */
+                .desktop-search {
+                    flex: 1;
+                    max-width: 500px;
+                    margin: 0 auto;
                 }
-                
-                .mobile-search input {
-                    background: #1a1a1a;
-                    border: 1px solid #333;
-                    color: white;
-                    padding: 0.8rem 1rem 0.8rem 2.5rem; /* Larger touch target */
+
+                .search-form {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
                 }
-                
-                .nav-item {
+
+                .search-icon {
+                    position: absolute;
+                    left: 1rem;
+                    color: var(--color-text-secondary);
+                    pointer-events: none;
+                }
+
+                .search-form input {
                     width: 100%;
-                    padding: 1rem 0; /* Larger touch target */
-                    font-size: 1.2rem;
-                    border-bottom: 1px solid rgba(255,255,255,0.08);
+                    background: #252525;
+                    border: 1px solid transparent;
+                    padding: 0.7rem 1rem 0.7rem 3rem;
+                    border-radius: 50px;
+                    color: white;
+                    font-family: var(--font-sans);
+                    transition: all var(--transition-fast);
                 }
-            }
-        `}</style>
+
+                .search-form input:focus {
+                    outline: none;
+                    background: #333;
+                    border-color: var(--color-accent);
+                }
+
+                /* =======================
+                ACTION BUTTON
+                ======================= */
+                .nav-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .icon-btn {
+                    background: transparent;
+                    border: none;
+                    color: var(--color-text-secondary);
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: color 0.2s ease, transform 0.2s ease;
+                }
+
+                .icon-btn:hover {
+                    color: var(--color-accent);
+                    transform: scale(1.1);
+                }
+
+                .icon-btn:focus-visible {
+                    outline: 2px solid var(--color-accent);
+                    border-radius: 50%;
+                }
+
+                /* =======================
+                NAV LINKS
+                ======================= */
+                .nav-links {
+                    display: flex;
+                    align-items: center;
+                    gap: var(--spacing-md);
+                }
+
+                .nav-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-size: 0.95rem;
+                    color: var(--color-text-secondary);
+                    transition: color var(--transition-fast);
+                }
+
+                .nav-item:hover,
+                .nav-item.active {
+                    color: #fff;
+                }
+
+                /* =======================
+                MOBILE
+                ======================= */
+                .mobile-search,
+                .mobile-backdrop,
+                .mobile-menu-btn {
+                    display: none;
+                }
+
+                /* =======================
+                ANIMATION
+                ======================= */
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to   { opacity: 1; }
+                }
+
+                /* =======================
+                RESPONSIVE
+                ======================= */
+                @media (max-width: 768px) {
+                    .navbar {
+                        background: #000;
+                        backdrop-filter: none;
+                    }
+
+                    .desktop-search {
+                        display: none;
+                    }
+
+                    .mobile-menu-btn {
+                        display: block;
+                        z-index: 3001;
+                    }
+
+                    .mobile-backdrop {
+                        display: block;
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(0,0,0,0.85);
+                        backdrop-filter: blur(4px);
+                        z-index: 2999;
+                        animation: fadeIn 0.25s ease-out;
+                    }
+
+                    .nav-links {
+                        position: fixed;
+                        top: 0;
+                        right: 0;
+                        height: 100vh;
+                        width: 85%;
+                        max-width: 320px;
+                        background: #000;
+                        flex-direction: column;
+                        padding: 5rem var(--spacing-md) var(--spacing-md);
+                        transform: translateX(100%);
+                        transition: transform 0.35s ease;
+                        box-shadow: -8px 0 30px rgba(0,0,0,1);
+                        align-items: flex-start;
+                        z-index: 3000;
+                        border-left: 1px solid #222;
+                    }
+
+                    .nav-links.open {
+                        transform: translateX(0);
+                    }
+
+                    .mobile-search {
+                        display: block;
+                        width: 100%;
+                        margin-bottom: 2rem;
+                    }
+
+                    .mobile-search input {
+                        width: 100%;
+                        background: #1a1a1a;
+                        border: 1px solid #333;
+                        color: white;
+                        padding: 0.8rem 1rem 0.8rem 2.5rem;
+                        border-radius: 50px;
+                    }
+
+                    .nav-item {
+                        width: 100%;
+                        padding: 1rem 0;
+                        font-size: 1.1rem;
+                        border-bottom: 1px solid rgba(255,255,255,0.08);
+                    }
+                }
+            `}</style>
         </nav>
     );
 };
