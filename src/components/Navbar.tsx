@@ -49,7 +49,21 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch, onShuffle }) => {
                     </button>
                 </div>
 
+                {isOpen && <div className="mobile-backdrop" onClick={() => setIsOpen(false)}></div>}
+
                 <div className={`nav-links ${isOpen ? 'open' : ''}`}>
+                    <div className="mobile-search">
+                        <form onSubmit={handleSearch} className="search-form">
+                            <Search size={18} className="search-icon" />
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                        </form>
+                    </div>
+
                     <Link to="/" className={`nav-item ${isActive('/')}`} onClick={() => setIsOpen(false)}>
                         <Home size={18} /> Home
                     </Link>
@@ -173,32 +187,78 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch, onShuffle }) => {
                 color: #fff;
             }
 
-
-            .mobile-menu-btn {
+            .mobile-search {
+                display: none;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+            
+            .mobile-backdrop {
                 display: none;
             }
 
             @media (max-width: 768px) {
+                .navbar {
+                    background: #000; /* Solid black on mobile */
+                    backdrop-filter: none;
+                }
+
                 .desktop-search { display: none; }
                 
-                .mobile-menu-btn { display: block; z-index: 101; }
+                .mobile-menu-btn { display: block; z-index: 2001; }
+                
+                .mobile-backdrop {
+                    display: block;
+                    position: fixed;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background: rgba(0,0,0,0.8); /* Darker dim */
+                    backdrop-filter: blur(5px);
+                    z-index: 1999;
+                    animation: fadeIn 0.3s ease-out;
+                }
 
                 .nav-links {
                     position: fixed;
                     top: 0;
                     right: 0;
                     bottom: 0;
-                    width: 70%;
-                    background: var(--color-surface);
+                    width: 85%; /* Slightly wider */
+                    max-width: 320px;
+                    background: #000; /* Solid black */
                     flex-direction: column;
-                    padding: var(--spacing-xl) var(--spacing-md);
+                    padding: 5rem var(--spacing-md) var(--spacing-md);
                     transform: translateX(100%);
                     transition: transform var(--transition-slow);
-                    box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+                    box-shadow: -5px 0 30px rgba(0,0,0,1);
+                    align-items: flex-start;
+                    z-index: 2000;
+                    border-left: 1px solid #222;
                 }
 
                 .nav-links.open {
                     transform: translateX(0);
+                }
+
+                .mobile-search {
+                    display: block;
+                    margin-bottom: 2rem;
+                }
+                
+                .mobile-search input {
+                    background: #1a1a1a;
+                    border: 1px solid #333;
+                    color: white;
+                    padding: 0.8rem 1rem 0.8rem 2.5rem; /* Larger touch target */
+                }
+                
+                .nav-item {
+                    width: 100%;
+                    padding: 1rem 0; /* Larger touch target */
+                    font-size: 1.2rem;
+                    border-bottom: 1px solid rgba(255,255,255,0.08);
                 }
             }
         `}</style>
