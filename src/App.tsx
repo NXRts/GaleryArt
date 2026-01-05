@@ -78,7 +78,7 @@ const AppContent = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
   // Keep a cache of full objects for the favorites page to use
   const [favoriteObjects, setFavoriteObjects] = useState<UnsplashPhoto[]>([]);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(Math.floor(Math.random() * 1000000));
 
   useEffect(() => {
     const savedFavs = localStorage.getItem('favorites');

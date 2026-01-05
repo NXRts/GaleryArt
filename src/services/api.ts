@@ -52,10 +52,14 @@ export const fetchPhotos = async (page: number = 1, perPage: number = 20, seedOf
 
         if (!key) {
             console.warn('Unsplash API Key is missing. Please add VITE_UNSPLASH_ACCESS_KEY to your .env file.');
-            return generateMockPhotos(perPage, page, seedOffset);
+            // Add seedOffset to page so different devices/refreshes see different "pages" of mock data
+            return generateMockPhotos(perPage, page + Math.floor(seedOffset / 100), seedOffset);
         }
 
-        const response = await fetch(`${API_URL}/photos?page=${page}&per_page=${perPage}&order_by=popular`, {
+        // For real Unsplash, we can use seedOffset to jitter the page for randomization
+        const randomPage = page + (seedOffset % 50);
+
+        const response = await fetch(`${API_URL}/photos?page=${randomPage}&per_page=${perPage}&order_by=popular`, {
             headers: {
                 Authorization: `Client-ID ${key}`,
             },
@@ -79,7 +83,7 @@ export const searchPhotos = async (query: string, page: number = 1, perPage: num
 
         if (!key) {
             console.warn('Unsplash API Key is missing. Using mock data for search.');
-            return generateMockPhotos(perPage, page, seedOffset);
+            return generateMockPhotos(perPage, page + Math.floor(seedOffset / 100), seedOffset);
         }
 
         const response = await fetch(`${API_URL}/search/photos?page=${page}&per_page=${perPage}&query=${encodeURIComponent(query)}`, {
