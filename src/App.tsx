@@ -78,7 +78,35 @@ const AppContent = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
   // Keep a cache of full objects for the favorites page to use
   const [favoriteObjects, setFavoriteObjects] = useState<UnsplashPhoto[]>([]);
-  const [refreshKey, setRefreshKey] = useState(Math.floor(Math.random() * 1000000));
+
+  // Stable seed calculation
+  const getStabilitySeed = () => {
+    // 1. Get or create stable deviceId
+    let deviceId = localStorage.getItem('deviceId');
+    if (!deviceId) {
+      deviceId = Math.random().toString(36).substring(2, 11);
+      localStorage.setItem('deviceId', deviceId);
+    }
+
+    // 2. Get manual offset (for force-refresh)
+    const manualOffset = parseInt(localStorage.getItem('manualOffset') || '0', 10);
+
+    // 3. Current hour (stability period)
+    const currentHour = Math.floor(Date.now() / 3600000);
+
+    // Combine them into a deterministic seed
+    // Simple hash-like combination
+    const seed = `${deviceId}-${currentHour}-${manualOffset}`;
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+        const char = seed.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash);
+  };
+
+  const [refreshKey, setRefreshKey] = useState(getStabilitySeed());
 
   useEffect(() => {
     const savedFavs = localStorage.getItem('favorites');
@@ -109,14 +137,27 @@ const AppContent = () => {
 
     setFavorites(consistentIds);
     setFavoriteObjects(consistentObjects);
-  }, []);
+
+    // Set an interval to check if the hour has changed to auto-refresh
+    const interval = setInterval(() => {
+        const newSeed = getStabilitySeed();
+        if (newSeed !== refreshKey) {
+            setRefreshKey(newSeed);
+        }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [refreshKey]);
 
   const handleSearch = (query: string) => {
     navigate(`/?q=${encodeURIComponent(query)}`);
   };
 
   const handleShuffle = () => {
-    setRefreshKey(prev => prev + 1000); // Increment by large amount to jump seeds
+    const currentOffset = parseInt(localStorage.getItem('manualOffset') || '0', 10);
+    const newOffset = currentOffset + 1;
+    localStorage.setItem('manualOffset', newOffset.toString());
+    setRefreshKey(getStabilitySeed());
   };
 
   const handleToggleFavorite = (photo: UnsplashPhoto, e: React.MouseEvent) => {
