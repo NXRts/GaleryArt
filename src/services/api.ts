@@ -105,10 +105,19 @@ export const searchPhotos = async (query: string, page: number = 1, perPage: num
 };
 
 const generateMockPhotos = (count: number, page: number = 1, seedOffset: number = 0): UnsplashPhoto[] => {
+    const firstNames = ['James', 'Mary', 'Robert', 'Patricia', 'John', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth'];
+    const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
+
     return Array.from({ length: count }).map((_, i) => {
         // Create a unique seed based on page and index to ensure this specific item is always the same
         // AND add seedOffset to allow force refresh
         const seed = (page * 1000 + i) + seedOffset;
+
+        // Use seeded random for artist name
+        const fnIndex = Math.floor(seededRandom(seed + 10) * firstNames.length);
+        const lnIndex = Math.floor(seededRandom(seed + 11) * lastNames.length);
+        const artistName = `${firstNames[fnIndex]} ${lastNames[lnIndex]}`;
+        const artistUsername = `${firstNames[fnIndex].toLowerCase()}_${seed % 1000}`;
 
         // Use seeded random for aspect ratios
         const aspectRatio = seededRandom(seed);
@@ -149,13 +158,17 @@ const generateMockPhotos = (count: number, page: number = 1, seedOffset: number 
             },
             links: { self: '', html: '', download: '', download_location: '' },
             user: {
-                id: 'user-mock',
-                username: 'artist_mock',
-                name: 'Unknown Artist',
+                id: `user-${seed}`,
+                username: artistUsername,
+                name: artistName,
                 portfolio_url: null,
-                bio: 'Just a mock artist',
-                location: 'Nowhere',
-                profile_image: { small: '', medium: '', large: '' },
+                bio: `Artistic creation by ${artistName}`,
+                location: 'Global',
+                profile_image: {
+                    small: `https://i.pravatar.cc/150?u=${seed}`,
+                    medium: `https://i.pravatar.cc/150?u=${seed}`,
+                    large: `https://i.pravatar.cc/150?u=${seed}`,
+                },
             },
         };
     });

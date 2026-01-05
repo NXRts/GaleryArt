@@ -157,6 +157,15 @@ const Modal: React.FC<ModalProps> = ({ photo, onClose }) => {
           height: 50px;
           border-radius: 50%;
           border: 2px solid var(--color-accent);
+          object-fit: cover;
+          background-color: #333;
+          flex-shrink: 0;
+          display: block;
+          /* Hide alt text when broken */
+          color: transparent;
+          text-indent: 100%;
+          white-space: nowrap;
+          overflow: hidden;
         }
         
         .artist-info h3 {
