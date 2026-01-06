@@ -150,8 +150,8 @@ const generateMockPhotos = (count: number, page: number = 1, seedOffset: number 
             description: 'Mock Photo',
             alt_description: 'A placeholder image for the art gallery',
             urls: {
-                raw: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
-                full: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
+                raw: `https://picsum.photos/seed/${imageSeed}/1920/1080`,
+                full: `https://picsum.photos/seed/${imageSeed}/1920/1080`,
                 regular: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
                 small: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
                 thumb: `https://picsum.photos/seed/${imageSeed}/200/200`,

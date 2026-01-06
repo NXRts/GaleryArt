@@ -51,35 +51,46 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ photos, onPhotoClick }) => 
                     onClick={() => onPhotoClick(currentPhoto)}
                 >
                     <img
-                        src={currentPhoto.urls.regular}
+                        src={currentPhoto.urls.full}
                         alt={currentPhoto.alt_description || 'Featured artwork'}
                         className="carousel-image"
                     />
-                    <div className="carousel-overlay">
-                        <div className="carousel-content">
-                            <h2>{currentPhoto.description || 'Featured Artwork'}</h2>
-                            <p className="carousel-artist">by {currentPhoto.user.name}</p>
-                        </div>
+                    
+                    {/* Minimal overlay for better text readability */}
+                    <div className="carousel-overlay"></div>
+                    
+                    {/* Centered hero content */}
+                    <div className="carousel-hero-content">
+                        <h1 className="hero-title">GaleryArt</h1>
+                        <p className="hero-subtitle">
+                            Sumber internet untuk visual.<br />
+                            Didukung oleh kreator di mana saja.
+                        </p>
+                    </div>
+
+                    {/* Artist attribution in bottom corner */}
+                    <div className="carousel-attribution">
+                        <span>Photo by {currentPhoto.user.name}</span>
                     </div>
                 </div>
 
-                {/* Navigation Buttons */}
+                {/* Navigation Buttons - More subtle */}
                 <button 
                     className="carousel-nav carousel-nav-prev" 
                     onClick={goToPrevious}
                     aria-label="Previous slide"
                 >
-                    <ChevronLeft size={32} />
+                    <ChevronLeft size={24} />
                 </button>
                 <button 
                     className="carousel-nav carousel-nav-next" 
                     onClick={goToNext}
                     aria-label="Next slide"
                 >
-                    <ChevronRight size={32} />
+                    <ChevronRight size={24} />
                 </button>
 
-                {/* Dot Indicators */}
+                {/* Dot Indicators - More spaced and minimal */}
                 <div className="carousel-dots">
                     {photos.map((_, index) => (
                         <button
@@ -102,9 +113,9 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ photos, onPhotoClick }) => 
                 .carousel-container {
                     position: relative;
                     width: 100%;
-                    height: 70vh;
-                    min-height: 500px;
-                    max-height: 700px;
+                    height: 60vh;
+                    min-height: 450px;
+                    max-height: 650px;
                     overflow: hidden;
                     border-radius: var(--border-radius);
                     background: #000;
@@ -115,11 +126,6 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ photos, onPhotoClick }) => 
                     height: 100%;
                     position: relative;
                     cursor: pointer;
-                    transition: transform 0.3s ease;
-                }
-
-                .carousel-image-wrapper:hover {
-                    transform: scale(1.02);
                 }
 
                 .carousel-image {
@@ -129,45 +135,69 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ photos, onPhotoClick }) => 
                     display: block;
                 }
 
+                /* Minimal overlay for text readability */
                 .carousel-overlay {
                     position: absolute;
-                    bottom: 0;
+                    top: 0;
                     left: 0;
                     right: 0;
-                    background: linear-gradient(
-                        to top,
-                        rgba(0, 0, 0, 0.9) 0%,
-                        rgba(0, 0, 0, 0.6) 50%,
-                        transparent 100%
-                    );
-                    padding: var(--spacing-lg);
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.25);
+                    pointer-events: none;
+                }
+
+                /* Centered hero content - Unsplash style */
+                .carousel-hero-content {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    text-align: center;
                     color: white;
+                    z-index: 2;
+                    width: 90%;
+                    max-width: 800px;
                 }
 
-                .carousel-content h2 {
-                    font-size: 2.5rem;
-                    margin-bottom: 0.5rem;
-                    font-weight: 600;
-                    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+                .hero-title {
+                    font-size: 3.5rem;
+                    font-weight: 700;
+                    margin-bottom: 1rem;
+                    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+                    letter-spacing: -0.02em;
                 }
 
-                .carousel-artist {
-                    font-size: 1.2rem;
-                    color: var(--color-accent);
-                    font-weight: 500;
+                .hero-subtitle {
+                    font-size: 1.25rem;
+                    font-weight: 400;
+                    line-height: 1.6;
+                    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+                    opacity: 0.95;
                 }
 
-                /* Navigation Buttons */
+                /* Artist attribution - bottom corner */
+                .carousel-attribution {
+                    position: absolute;
+                    bottom: var(--spacing-md);
+                    left: var(--spacing-md);
+                    color: white;
+                    font-size: 0.875rem;
+                    z-index: 2;
+                    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+                    opacity: 0.9;
+                }
+
+                /* Navigation Buttons - More subtle */
                 .carousel-nav {
                     position: absolute;
                     top: 50%;
                     transform: translateY(-50%);
-                    background: rgba(0, 0, 0, 0.5);
-                    backdrop-filter: blur(10px);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    background: rgba(255, 255, 255, 0.3);
+                    backdrop-filter: blur(8px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
                     color: white;
-                    width: 50px;
-                    height: 50px;
+                    width: 40px;
+                    height: 40px;
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
@@ -175,11 +205,13 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ photos, onPhotoClick }) => 
                     cursor: pointer;
                     transition: all 0.3s ease;
                     z-index: 10;
+                    opacity: 0.7;
                 }
 
                 .carousel-nav:hover {
-                    background: rgba(212, 163, 115, 0.9);
-                    transform: translateY(-50%) scale(1.1);
+                    background: rgba(255, 255, 255, 0.5);
+                    opacity: 1;
+                    transform: translateY(-50%) scale(1.05);
                 }
 
                 .carousel-nav-prev {
@@ -190,36 +222,38 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ photos, onPhotoClick }) => 
                     right: var(--spacing-md);
                 }
 
-                /* Dot Indicators */
+                /* Dot Indicators - More minimal */
                 .carousel-dots {
                     position: absolute;
                     bottom: var(--spacing-md);
                     left: 50%;
                     transform: translateX(-50%);
                     display: flex;
-                    gap: 0.75rem;
+                    gap: 1rem;
                     z-index: 10;
                 }
 
                 .carousel-dot {
-                    width: 12px;
-                    height: 12px;
+                    width: 10px;
+                    height: 10px;
                     border-radius: 50%;
-                    background: rgba(255, 255, 255, 0.4);
-                    border: 2px solid rgba(255, 255, 255, 0.6);
+                    background: rgba(255, 255, 255, 0.5);
+                    border: none;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     padding: 0;
+                    opacity: 0.7;
                 }
 
                 .carousel-dot:hover {
-                    background: rgba(255, 255, 255, 0.7);
+                    background: rgba(255, 255, 255, 0.8);
+                    opacity: 1;
                     transform: scale(1.2);
                 }
 
                 .carousel-dot.active {
-                    background: var(--color-accent);
-                    border-color: var(--color-accent);
+                    background: white;
+                    opacity: 1;
                     transform: scale(1.3);
                 }
 
@@ -230,17 +264,18 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ photos, onPhotoClick }) => 
                         min-height: 400px;
                     }
 
-                    .carousel-content h2 {
-                        font-size: 1.8rem;
+                    .hero-title {
+                        font-size: 2.5rem;
                     }
 
-                    .carousel-artist {
+                    .hero-subtitle {
                         font-size: 1rem;
                     }
 
                     .carousel-nav {
-                        width: 40px;
-                        height: 40px;
+                        width: 36px;
+                        height: 36px;
+                        opacity: 0.6;
                     }
 
                     .carousel-nav-prev {
@@ -251,8 +286,20 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ photos, onPhotoClick }) => 
                         right: var(--spacing-sm);
                     }
 
-                    .carousel-overlay {
-                        padding: var(--spacing-md);
+                    .carousel-attribution {
+                        font-size: 0.75rem;
+                        bottom: var(--spacing-sm);
+                        left: var(--spacing-sm);
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .hero-title {
+                        font-size: 2rem;
+                    }
+
+                    .hero-subtitle {
+                        font-size: 0.9rem;
                     }
                 }
             `}</style>
