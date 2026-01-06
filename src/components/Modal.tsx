@@ -24,7 +24,7 @@ const Modal: React.FC<ModalProps> = ({ photo, onClose }) => {
 
                 <div className="image-container">
                     <img
-                        src={photo.urls.regular}
+                        src={photo.urls.full}
                         alt={photo.alt_description || 'Art piece'}
                         className="modal-image"
                     />

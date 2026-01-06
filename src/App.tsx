@@ -54,13 +54,7 @@ const Home = ({
         <div className="loader">Searching the archives...</div>
       ) : (
         <>
-          {/* Show carousel only on homepage (not during search) */}
-          {!searchQuery && photos.length > 0 && (
-            <HeroCarousel 
-              photos={photos.slice(0, 5)} 
-              onPhotoClick={setSelectedPhoto}
-            />
-          )}
+          {!searchQuery && <HeroCarousel photos={photos.slice(0, 5)} onPhotoClick={setSelectedPhoto} />}
           <Gallery
             photos={photos}
             onPhotoClick={setSelectedPhoto}

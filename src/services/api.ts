@@ -122,19 +122,33 @@ const generateMockPhotos = (count: number, page: number = 1, seedOffset: number 
         // Use seeded random for aspect ratios
         const aspectRatio = seededRandom(seed);
         let width, height;
+        let regularWidth, regularHeight;
+        let smallWidth, smallHeight;
 
         if (aspectRatio < 0.4) {
-            // Portrait
-            width = 400;
-            height = 600 + Math.floor(seededRandom(seed + 1) * 200);
+            // Portrait - High resolution
+            width = 1600;
+            height = 2400 + Math.floor(seededRandom(seed + 1) * 800);
+            regularWidth = 1080;
+            regularHeight = Math.floor(height * (regularWidth / width));
+            smallWidth = 400;
+            smallHeight = Math.floor(height * (smallWidth / width));
         } else if (aspectRatio < 0.8) {
-            // Landscape
-            width = 600;
-            height = 400 + Math.floor(seededRandom(seed + 2) * 100);
+            // Landscape - High resolution
+            width = 2400;
+            height = 1600 + Math.floor(seededRandom(seed + 2) * 400);
+            regularWidth = 1080;
+            regularHeight = Math.floor(height * (regularWidth / width));
+            smallWidth = 400;
+            smallHeight = Math.floor(height * (smallWidth / width));
         } else {
-            // Square-ish
-            width = 500;
-            height = 500;
+            // Square-ish - High resolution
+            width = 2000;
+            height = 2000;
+            regularWidth = 1080;
+            regularHeight = 1080;
+            smallWidth = 400;
+            smallHeight = 400;
         }
 
         // Use the seed for the image URL too, ensuring the image visual is consistent
@@ -150,10 +164,10 @@ const generateMockPhotos = (count: number, page: number = 1, seedOffset: number 
             description: 'Mock Photo',
             alt_description: 'A placeholder image for the art gallery',
             urls: {
-                raw: `https://picsum.photos/seed/${imageSeed}/1920/1080`,
-                full: `https://picsum.photos/seed/${imageSeed}/1920/1080`,
-                regular: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
-                small: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
+                raw: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
+                full: `https://picsum.photos/seed/${imageSeed}/${width}/${height}`,
+                regular: `https://picsum.photos/seed/${imageSeed}/${regularWidth}/${regularHeight}`,
+                small: `https://picsum.photos/seed/${imageSeed}/${smallWidth}/${smallHeight}`,
                 thumb: `https://picsum.photos/seed/${imageSeed}/200/200`,
             },
             links: { self: '', html: '', download: '', download_location: '' },
