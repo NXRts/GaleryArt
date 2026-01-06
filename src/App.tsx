@@ -5,6 +5,7 @@ import Gallery from './components/Gallery';
 import Modal from './components/Modal';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import HeroCarousel from './components/HeroCarousel';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Favorites from './pages/Favorites';
@@ -52,12 +53,15 @@ const Home = ({
       {loading ? (
         <div className="loader">Searching the archives...</div>
       ) : (
-        <Gallery
-          photos={photos}
-          onPhotoClick={setSelectedPhoto}
-          favorites={favorites}
-          onToggleFavorite={onToggleFavorite}
-        />
+        <>
+          {!searchQuery && <HeroCarousel photos={photos.slice(0, 5)} onPhotoClick={setSelectedPhoto} />}
+          <Gallery
+            photos={photos}
+            onPhotoClick={setSelectedPhoto}
+            favorites={favorites}
+            onToggleFavorite={onToggleFavorite}
+          />
+        </>
       )}
       <Modal photo={selectedPhoto} onClose={() => setSelectedPhoto(null)} />
 

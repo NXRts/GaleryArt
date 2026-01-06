@@ -24,7 +24,7 @@ const Gallery: React.FC<GalleryProps> = ({ photos, onPhotoClick, favorites, onTo
           >
             <div className="image-wrapper">
               <img
-                src={photo.urls.small}
+                src={photo.urls.regular}
                 alt={photo.alt_description || 'Art'}
                 className="gallery-image"
                 loading="lazy"
