@@ -1,73 +1,94 @@
-# React + TypeScript + Vite
+# 🎨 GaleryArt
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GaleryArt is a modern, premium art gallery application designed with a focus on visual excellence and a seamless user experience. It leverages the **Unsplash API** to provide a vast collection of high-quality photographs, presented in a sleek, dark-themed interface.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## React Compiler
+- **🏆 Hero Carousel**: A dynamic, high-impact showcase of curated photography on the home page.
+- **🖼️ Responsive Gallery**: A fluid, grid-based layout that adapts perfectly to any screen size.
+- **🔍 Powerful Search**: Easily find inspiration by searching through millions of photos.
+- **❤️ Favorites System**: Save your favorite pieces to a dedicated favorites collection, persisted locally.
+- **📱 Immersive Modal**: Detailed view of each photograph with artist information and high-resolution previews.
+- **⚡ Performance First**: Built with React 19 and Vite for lightning-fast load times and smooth transitions.
+- **🌗 Premium Aesthetics**: A sophisticated dark-mode design using modern typography and smooth animations.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Framework**: [React 19](https://react.dev/)
+- **Build Tool**: [Vite 7](https://vitejs.dev/)
+- **Styling**: Vanilla CSS (Custom Hooks & CSS Variables)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Routing**: [React Router 7](https://reactrouter.com/)
+- **API**: [Unsplash API](https://unsplash.com/developers)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+
+- Node.js (v18.0.0 or higher)
+- npm or yarn
+- An Unsplash Developer account for an API Key
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/galery-art.git
+   cd galery-art
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables:**
+   Create a `.env` file in the root directory and add your Unsplash Access Key:
+   ```env
+   VITE_UNSPLASH_ACCESS_KEY=your_access_key_here
+   ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 📂 Project Structure
+
+```text
+src/
+├── assets/         # Static assets and images
+├── components/     # Reusable UI components (Navbar, Gallery, Modal, etc.)
+├── pages/          # Top-level page components (Home, About, Favorites)
+├── services/       # API integration and logic
+│   └── api.ts      # Unsplash API service
+├── App.tsx         # Main application component & routing
+├── main.tsx        # Application entry point
+├── index.css       # Global styles and design tokens
+└── App.css         # Component-specific styles
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🤝 Contributing
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Contributions are welcome! Feel free to open an issue or submit a pull request if you have ideas for improvements or new features.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+*Made with ❤️ by the GaleryArt team.*
