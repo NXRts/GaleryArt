@@ -28,6 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch, onShuffle }) => {
         <nav className="navbar">
             <div className="nav-container">
                 <Link to="/" className="nav-logo" onClick={() => onSearch('')}>
+                    <img src="/logo.svg" alt="GaleryArt Logo" className="logo-img" />
                     GaleryArt.
                 </Link>
 
@@ -110,10 +111,19 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch, onShuffle }) => {
                 LOGO
                 ======================= */
                 .nav-logo {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
                     font-family: var(--font-serif);
                     font-size: 1.5rem;
                     font-weight: 700;
                     color: #fff;
+                }
+
+                .logo-img {
+                    height: 32px;
+                    width: 32px;
+                    object-fit: contain;
                 }
 
                 /* =======================
